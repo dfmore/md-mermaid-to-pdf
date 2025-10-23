@@ -1,76 +1,43 @@
 # Markdown to PDF Converter
 
-Convert Markdown files with Mermaid diagrams and code blocks to PDF. Built for technical documentation with native Cursor IDE integration.
+Convert Markdown files with Mermaid diagrams and code blocks to PDF. Built for Cursor IDE with one-click conversion.
 
 https://github.com/user-attachments/assets/5f5ddd09-66f3-407b-be05-ade41b87668a
 
-> **Quick Demo:** Convert any `.md` file to PDF directly from Cursor with one keyboard shortcut.
-
 ---
 
-## What It Does
+## Quick Start for Cursor Users
 
-- 📄 Converts Markdown to PDF
-- 📊 Renders all Mermaid diagram types (flowcharts, sequence, class, state, ER, Gantt, etc.)
-- 💻 Syntax highlighting for 100+ languages via Shiki
-- 🔧 Integrates with Cursor IDE as a task
-- ⚡ Uses headless Chrome - no LaTeX or Pandoc required
+### Step 1: Install Node.js (if needed)
 
----
-
-## Installation
-
-### Prerequisites: Node.js v16+
-
-**Check if already installed:**
+Check if you have Node.js:
 ```powershell
 node --version
 ```
 
-**If not installed, choose one method:**
+If you see a version number (v16.0.0 or higher), skip to Step 2.
 
+If not, **open PowerShell as Administrator** and run:
 ```powershell
-# Method 1: winget (Windows 11/10 - easiest)
 winget install OpenJS.NodeJS.LTS
-
-# Method 2: Chocolatey
-choco install nodejs-lts
-
-# Method 3: Manual installer
-# Download from https://nodejs.org/ (LTS version)
 ```
 
-**After installation:** Close and reopen PowerShell to refresh PATH.
+Then **close and reopen PowerShell** (or restart Cursor).
 
-### Setup This Project
+> **Don't have winget?** Download from https://nodejs.org/ and install the LTS version.
+
+### Step 2: Install This Project
 
 ```powershell
-# Navigate to project folder
 cd C:\path\to\md-mermaid-to-pdf
-
-# Install dependencies (~300MB, takes 2-5 min)
 npm install
-
-# Test it works
-echo "# Test`n``````javascript`nconst x = 1;`n```````n``````mermaid`ngraph LR`n    A-->B`n``````" > test.md
-.\md-convert.bat test.md
 ```
 
-If you see `✅ Successfully converted to PDF: test.pdf`, you're ready!
+This downloads ~300MB and takes 2-5 minutes. Wait for it to complete.
 
----
+### Step 3: Add Cursor Task
 
-## Usage
-
-### From Command Line
-
-```powershell
-.\md-convert.bat your-file.md
-```
-
-### From Cursor (Recommended)
-
-**One-time setup:** Edit `C:\Users\{YourName}\AppData\Roaming\Cursor\User\settings.json` and add:
+Open `C:\Users\{YourName}\AppData\Roaming\Cursor\User\settings.json` and add this:
 
 ```json
 "tasks.version": "2.0.0",
@@ -78,7 +45,7 @@ If you see `✅ Successfully converted to PDF: test.pdf`, you're ready!
   {
     "label": "Convert MD to PDF",
     "type": "shell",
-    "command": "node C:/Users/YourName/GitHub/md-mermaid-to-pdf/md-to-pdf-puppeteer.js \"${file}\"",
+    "command": "node C:/path/to/md-mermaid-to-pdf/md-to-pdf-puppeteer.js \"${file}\"",
     "group": "build",
     "presentation": {
       "echo": true,
@@ -90,109 +57,130 @@ If you see `✅ Successfully converted to PDF: test.pdf`, you're ready!
 ]
 ```
 
-Replace `C:/Users/YourName/GitHub/md-mermaid-to-pdf/` with your actual path (use forward slashes).
+**⚠️ Important:** Replace `C:/path/to/md-mermaid-to-pdf/` with your actual installation path. Use forward slashes `/` even on Windows.
 
-**Then use it:**
+**Example:**
+```json
+"command": "node C:/Users/John/GitHub/md-mermaid-to-pdf/md-to-pdf-puppeteer.js \"${file}\"",
+```
+
+### Step 4: Use It
+
 1. Open any `.md` file in Cursor
-2. `Ctrl+Shift+P` → "Tasks: Run Task" → "Convert MD to PDF"
-3. PDF appears in same directory
+2. Press `Ctrl+Shift+P`
+3. Type "Tasks: Run Task"
+4. Select "Convert MD to PDF"
+5. PDF appears in the same folder as your `.md` file
+
+Done! You now have one-click PDF conversion in Cursor.
 
 ---
 
-## What It Supports
+## What It Does
 
-### All Mermaid Diagram Types
+- 📄 Converts Markdown to PDF
+- 📊 Renders all Mermaid diagram types (flowcharts, sequence, class, state, ER, Gantt, etc.)
+- 💻 Syntax highlighting for 100+ languages
+- 🔧 One-click conversion from Cursor
+- ⚡ Uses headless Chrome - no LaTeX or Pandoc required
 
+---
+
+## CLI Usage (Alternative)
+
+If you prefer command line:
+
+```powershell
+# Windows batch file
+.\md-convert.bat your-file.md
+
+# Or Node script directly
+node md-to-pdf-puppeteer.js your-file.md
+node md-to-pdf-puppeteer.js input.md output.pdf
 ```
-✅ Flowcharts (graph TD, graph LR)
-✅ Sequence diagrams
-✅ Class diagrams
-✅ State diagrams
-✅ Entity Relationship diagrams
-✅ Gantt charts
-✅ Pie charts
-✅ Git graphs
-✅ User journeys
-✅ Quadrant charts
-```
 
-All diagrams render as high-quality SVG, centered with proper styling.
+---
 
-### Syntax Highlighting for 100+ Languages
+## Supported Features
 
-**Common languages:**
-JavaScript, TypeScript, Python, Go, Rust, C/C++/C#, Java, Bash, PowerShell, JSON, YAML, SQL, HTML, CSS, Markdown, Docker, Terraform
+**Mermaid diagrams:**
+- Flowcharts, sequence diagrams, class diagrams
+- State diagrams, ER diagrams, Gantt charts
+- Pie charts, git graphs, user journeys
 
-**Code blocks get:**
-- Monospace fonts (SF Mono, Consolas)
-- GitHub Light syntax colors
-- Light gray background
-- Proper indentation
+**Code syntax highlighting:**
+- 100+ languages (JavaScript, Python, Go, Rust, C/C++, Java, etc.)
+- GitHub Light theme
+- Monospace fonts with proper indentation
 
-### Standard Markdown
-
-- Headings (H1-H6)
-- **Bold**, *italic*, `code`
+**Standard Markdown:**
+- Headings, bold, italic, code
 - Lists, tables, blockquotes
 - Links, images
 - YAML frontmatter
 
----
-
-## Output Format
-
+**Output format:**
 - A4 portrait pages
-- Inter font family (11pt body, 20pt-11pt headings)
+- Inter font (11pt body, 20pt headings)
 - 0.5" margins
-- High-resolution diagram rendering
-- Clean code block formatting
 
 ---
 
 ## Troubleshooting
 
 **"node is not recognized"**
-- Restart PowerShell after installing Node.js
-- Or manually add to PATH: `$env:Path += ";C:\Program Files\nodejs\"`
+
+Node.js isn't installed or not in PATH.
+
+→ Install Node.js using Step 1 above  
+→ Restart PowerShell/Cursor after installation
 
 **"Cannot find module 'puppeteer'"**
-- Run `npm install` in the project directory
+
+Dependencies aren't installed.
+
+→ Run `npm install` in the project directory  
+→ Wait for it to complete (~300MB download)
 
 **"Failed to launch Chrome"**
-- Run `npm install puppeteer --force`
+
+Puppeteer's Chrome is corrupted.
+
+→ Run `npm install puppeteer --force`
+
+**Cursor task doesn't work**
+
+Path in settings.json is wrong.
+
+→ Use absolute path with forward slashes: `C:/Users/...`  
+→ Verify the file exists at that path  
+→ Restart Cursor after editing settings.json
 
 **Mermaid diagrams not rendering**
-- Check internet connection (Mermaid loads from CDN)
-- Validate syntax at https://mermaid.live
 
-**Cursor task not working**
-- Use absolute path with forward slashes in settings.json
-- Verify the file exists at that path
-- Restart Cursor after editing settings
+Internet connection issue.
+
+→ Check you're online (Mermaid loads from CDN)  
+→ Test your diagram syntax at https://mermaid.live
+
+**PDF generation takes forever**
+
+First run downloads fonts/libraries from CDN.
+
+→ Be patient on first PDF generation  
+→ Subsequent runs are faster (cached)
 
 ---
 
 ## How It Works
 
-1. Parses Markdown with `marked` (GitHub Flavored Markdown)
+Uses headless Chrome to render Markdown as HTML, then saves as PDF:
+
+1. Parses Markdown with `marked`
 2. Extracts YAML frontmatter with `gray-matter`
-3. Highlights code blocks with `shiki`
+3. Highlights code with `shiki`
 4. Loads Mermaid.js from CDN for diagrams
-5. Renders HTML to PDF with `puppeteer` (headless Chrome)
-6. Saves high-quality PDF to disk
+5. Renders to PDF with `puppeteer`
 
-**Dependencies:** puppeteer (~280MB), marked, shiki (~15MB), gray-matter  
-**CDN Resources:** Mermaid.js (~1MB), Inter Font (~400KB)  
-**Internet required:** Yes, for CDN resources during PDF generation
+**Note:** Requires internet connection because Mermaid.js and Inter font load from CDN during PDF generation.
 
----
-
-## License
-
-MIT
-
----
-
-## Credits
-
-Built with [Puppeteer](https://pptr.dev/), [Marked](https://marked.js.org/), [Shiki](https://shiki.matsu.io/), [Gray Matter](https://github.com/jonschlinkert/gray-matter), [Mermaid](https://mermaid.js.org/), and [Inter Font](https://rsms.me/inter/).
