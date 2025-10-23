@@ -1,6 +1,6 @@
 # Markdown to PDF Converter
 
-Convert Markdown files with Mermaid diagrams to professional PDFs. Standalone script with native Cursor IDE integration.
+Convert Markdown files with Mermaid diagrams and code blocks to PDF. Built for technical documentation with native Cursor IDE integration.
 
 https://github.com/user-attachments/assets/5f5ddd09-66f3-407b-be05-ade41b87668a
 
@@ -8,48 +8,75 @@ https://github.com/user-attachments/assets/5f5ddd09-66f3-407b-be05-ade41b87668a
 
 ---
 
-## Why Use This?
+## Why This Converter?
 
-- **Simple setup** - Just `npm install`, no external software needed
-- **Cursor native** - Integrated task for instant PDF generation
-- **Professional output** - A4 format, Inter font, syntax highlighting
-- **Mermaid diagrams** - Full support for flowcharts, sequence diagrams, etc.
-- **Self-contained** - Everything bundled via npm (no LaTeX, Pandoc, etc.)
+Unlike basic Markdown converters, this tool excels at technical documentation:
 
----
+- 🎯 **Built for Mermaid** - All diagram types: flowcharts, sequence, class, state, ER, Gantt, etc.
+- 💻 **Code-focused** - Syntax highlighting for 100+ languages via Shiki (GitHub theme)
+- 📐 **Diagram quality** - High-resolution SVG rendering, centered layout, proper backgrounds
+- 🎨 **Code aesthetics** - Monospace fonts, syntax colors, proper spacing
+- ⚡ **Fast rendering** - Headless Chrome engine handles complex diagrams efficiently
+- 🔧 **Cursor native** - One-click PDF generation from your editor
+- 📦 **Self-contained** - No LaTeX, Pandoc, or external tools needed
 
-## Quick Start
-
-```bash
-npm install
-md-convert.bat your-file.md
-```
-
-**Or use from Cursor:** `Ctrl+Shift+P` → "Tasks: Run Task" → "Convert MD to PDF"
+**Perfect for:** API documentation, technical specs, architecture diagrams, code tutorials, engineering notes.
 
 ---
 
 ## Installation
 
-**Prerequisites:** Node.js v16+ ([download](https://nodejs.org/))
+### Prerequisites: Node.js v16+
 
-```bash
-# Verify Node.js
+**Check if already installed:**
+```powershell
 node --version
-
-# Install dependencies
-npm install
 ```
 
-Downloads ~300MB (includes Chromium). Takes 2-5 minutes.
+**If not installed, choose one method:**
+
+```powershell
+# Method 1: winget (Windows 11/10 - easiest)
+winget install OpenJS.NodeJS.LTS
+
+# Method 2: Chocolatey
+choco install nodejs-lts
+
+# Method 3: Manual installer
+# Download from https://nodejs.org/ (LTS version)
+```
+
+**After installation:** Close and reopen PowerShell to refresh PATH.
+
+### Setup This Project
+
+```powershell
+# Navigate to project folder
+cd C:\path\to\md-mermaid-to-pdf
+
+# Install dependencies (~300MB, takes 2-5 min)
+npm install
+
+# Test it works
+echo "# Test`n``````javascript`nconst x = 1;`n```````n``````mermaid`ngraph LR`n    A-->B`n``````" > test.md
+.\md-convert.bat test.md
+```
+
+If you see `✅ Successfully converted to PDF: test.pdf`, you're ready!
 
 ---
 
-## Cursor Integration
+## Usage
 
-### Setup
+### From Command Line
 
-Add this to `C:\Users\{username}\AppData\Roaming\Cursor\User\settings.json`:
+```powershell
+.\md-convert.bat your-file.md
+```
+
+### From Cursor (Recommended)
+
+**One-time setup:** Edit `C:\Users\{YourName}\AppData\Roaming\Cursor\User\settings.json` and add:
 
 ```json
 "tasks.version": "2.0.0",
@@ -57,7 +84,7 @@ Add this to `C:\Users\{username}\AppData\Roaming\Cursor\User\settings.json`:
   {
     "label": "Convert MD to PDF",
     "type": "shell",
-    "command": "node C:/path/to/md-mermaid-to-pdf/md-to-pdf-puppeteer.js \"${file}\"",
+    "command": "node C:/Users/YourName/GitHub/md-mermaid-to-pdf/md-to-pdf-puppeteer.js \"${file}\"",
     "group": "build",
     "presentation": {
       "echo": true,
@@ -69,113 +96,100 @@ Add this to `C:\Users\{username}\AppData\Roaming\Cursor\User\settings.json`:
 ]
 ```
 
-**Update the path** to match your installation directory.
+Replace `C:/Users/YourName/GitHub/md-mermaid-to-pdf/` with your actual path (use forward slashes).
 
-### Usage
-
+**Then use it:**
 1. Open any `.md` file in Cursor
 2. `Ctrl+Shift+P` → "Tasks: Run Task" → "Convert MD to PDF"
 3. PDF appears in same directory
 
-The `${file}` variable automatically references the current open file.
-
 ---
 
-## CLI Usage
+## What It Supports
 
-```bash
-# Windows batch file
-md-convert.bat input.md
+### All Mermaid Diagram Types
 
-# Node script (cross-platform)
-node md-to-pdf-puppeteer.js input.md
-node md-to-pdf-puppeteer.js input.md output.pdf
-
-# NPM
-npm run convert input.md
+```
+✅ Flowcharts (graph TD, graph LR)
+✅ Sequence diagrams
+✅ Class diagrams
+✅ State diagrams
+✅ Entity Relationship diagrams
+✅ Gantt charts
+✅ Pie charts
+✅ Git graphs
+✅ User journeys
+✅ Quadrant charts
 ```
 
+All diagrams render as high-quality SVG, centered with proper styling.
+
+### Syntax Highlighting for 100+ Languages
+
+**Common languages:**
+JavaScript, TypeScript, Python, Go, Rust, C/C++/C#, Java, Bash, PowerShell, JSON, YAML, SQL, HTML, CSS, Markdown, Docker, Terraform
+
+**Code blocks get:**
+- Monospace fonts (SF Mono, Consolas)
+- GitHub Light syntax colors
+- Light gray background
+- Proper indentation
+
+### Standard Markdown
+
+- Headings (H1-H6)
+- **Bold**, *italic*, `code`
+- Lists, tables, blockquotes
+- Links, images
+- YAML frontmatter
+
 ---
 
-## Features
+## Output Format
 
-| Feature | Description |
-|---------|-------------|
-| **Markdown** | Full GitHub Flavored Markdown support |
-| **Mermaid** | Flowcharts, sequence diagrams, class diagrams, etc. |
-| **Syntax Highlighting** | Code blocks via Shiki (GitHub Light theme) |
-| **Frontmatter** | YAML metadata (title, author, date) |
-| **Styling** | A4 portrait, Inter font, 0.5" margins |
-| **Elements** | Tables, lists, images, links, blockquotes |
-| **Setup** | No external software needed |
-
----
-
-## Technical Details
-
-### Dependencies
-
-| Package | Version | Size | Purpose |
-|---------|---------|------|---------|
-| puppeteer | ^24.25.0 | ~280MB | Headless Chrome for PDF rendering |
-| marked | ^16.4.1 | ~100KB | Markdown to HTML parser |
-| shiki | ^3.13.0 | ~15MB | Syntax highlighting |
-| gray-matter | ^4.0.3 | ~50KB | YAML frontmatter parsing |
-
-### External Resources (CDN)
-
-- **Mermaid.js** (~1MB) - Diagram rendering
-- **Inter Font** - Professional typography
-
-**Note:** Internet connection required during PDF generation.
-
-### How It Works
-
-1. Parse Markdown with `marked`
-2. Extract frontmatter with `gray-matter`
-3. Highlight code blocks with `shiki`
-4. Inject Mermaid.js for diagram rendering
-5. Render HTML to PDF with `puppeteer` (headless Chrome)
-6. Save to disk
+- A4 portrait pages
+- Inter font family (11pt body, 20pt-11pt headings)
+- 0.5" margins
+- High-resolution diagram rendering
+- Clean code block formatting
 
 ---
 
 ## Troubleshooting
 
-### Common Issues
+**"node is not recognized"**
+- Restart PowerShell after installing Node.js
+- Or manually add to PATH: `$env:Path += ";C:\Program Files\nodejs\"`
 
 **"Cannot find module 'puppeteer'"**
-```bash
-npm install
-```
+- Run `npm install` in the project directory
 
 **"Failed to launch Chrome"**
-```bash
-npm install puppeteer --force
-```
+- Run `npm install puppeteer --force`
 
-**PDF generation fails**
-- Ensure internet connection (CDN resources needed)
-- Check firewall/proxy settings
+**Mermaid diagrams not rendering**
+- Check internet connection (Mermaid loads from CDN)
+- Validate syntax at https://mermaid.live
 
 **Cursor task not working**
-- Verify path in `settings.json` is absolute
-- Use forward slashes: `C:/Users/.../md-to-pdf-puppeteer.js`
-- Ensure file exists at specified path
+- Use absolute path with forward slashes in settings.json
+- Verify the file exists at that path
+- Restart Cursor after editing settings
 
 ---
 
-## Project Structure
+## How It Works
 
-```
-md-mermaid-to-pdf/
-├── assets/                    # Demo videos and media
-├── md-convert.bat             # Windows batch script
-├── md-to-pdf-puppeteer.js    # Main converter (505 lines)
-├── package.json               # Dependencies
-├── package-lock.json          # Locked versions
-└── node_modules/              # Dependencies (after npm install)
-```
+1. Parses Markdown with `marked` (GitHub Flavored Markdown)
+2. Extracts YAML frontmatter with `gray-matter`
+3. Highlights code blocks with `shiki`
+4. Loads Mermaid.js from CDN for diagrams
+5. Renders HTML to PDF with `puppeteer` (headless Chrome)
+6. Saves high-quality PDF to disk
+
+**Dependencies:** puppeteer (~280MB), marked, shiki (~15MB), gray-matter  
+**CDN Resources:** Mermaid.js (~1MB), Inter Font (~400KB)  
+**Internet required:** Yes, for CDN resources during PDF generation
 
 ---
 
