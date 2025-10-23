@@ -3,7 +3,11 @@
 Convert Markdown files with Mermaid diagrams to professional PDFs. Standalone script with native Cursor IDE integration.
 
 <div align="center">
-  <video src="./assets/md-mermaid-to-pdf.mp4" width="100%" autoplay loop muted></video>
+  
+![Demo](./assets/md-mermaid-to-pdf.gif)
+
+*Or watch the [video demo](./assets/md-mermaid-to-pdf.mp4)*
+
 </div>
 
 > **Quick Demo:** Convert any `.md` file to PDF directly from Cursor with one keyboard shortcut.
@@ -12,11 +16,11 @@ Convert Markdown files with Mermaid diagrams to professional PDFs. Standalone sc
 
 ## Why Use This?
 
-- **Zero setup** - Just `npm install` and start converting
+- **Simple setup** - Just `npm install`, no external software needed
 - **Cursor native** - Integrated task for instant PDF generation
 - **Professional output** - A4 format, Inter font, syntax highlighting
 - **Mermaid diagrams** - Full support for flowcharts, sequence diagrams, etc.
-- **No external tools** - Everything bundled via npm
+- **Self-contained** - Everything bundled via npm (no LaTeX, Pandoc, etc.)
 
 ---
 
