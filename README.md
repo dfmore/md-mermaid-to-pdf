@@ -95,6 +95,7 @@ Done! You now have one-click PDF conversion in Cursor.
 - 📊 Renders all Mermaid diagram types (flowcharts, sequence, class, state, ER, Gantt, etc.)
 - 💻 Syntax highlighting for 100+ languages
 - 🔧 One-click conversion from Cursor
+- 🔒 **Privacy-focused**: Your markdown content never leaves your computer
 
 ---
 
@@ -195,4 +196,3 @@ Uses headless Chrome to render Markdown as HTML, then saves as PDF:
 5. Renders to PDF with `puppeteer`
 
 **Note:** Requires internet connection because Mermaid.js and Inter font load from CDN during PDF generation.
-
