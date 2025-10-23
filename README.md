@@ -4,6 +4,19 @@ Convert Markdown files with Mermaid diagrams and code blocks to PDF. Built for C
 
 https://github.com/user-attachments/assets/5f5ddd09-66f3-407b-be05-ade41b87668a
 
+## Table of Contents
+
+- [Quick Start for Cursor Users](#quick-start-for-cursor-users)
+  - [Step 1: Install Node.js (if needed)](#step-1-install-nodejs-if-needed)
+  - [Step 2: Install This Project](#step-2-install-this-project)
+  - [Step 3: Add Cursor Task](#step-3-add-cursor-task)
+  - [Step 4: Use It](#step-4-use-it)
+- [What It Does](#what-it-does)
+- [CLI Usage (Alternative)](#cli-usage-alternative)
+- [Supported Features](#supported-features)
+- [Troubleshooting](#troubleshooting)
+- [How It Works](#how-it-works)
+
 ---
 
 ## Quick Start for Cursor Users
@@ -82,7 +95,6 @@ Done! You now have one-click PDF conversion in Cursor.
 - 📊 Renders all Mermaid diagram types (flowcharts, sequence, class, state, ER, Gantt, etc.)
 - 💻 Syntax highlighting for 100+ languages
 - 🔧 One-click conversion from Cursor
-- ⚡ Uses headless Chrome - no LaTeX or Pandoc required
 
 ---
 
