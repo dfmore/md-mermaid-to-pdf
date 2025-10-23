@@ -17,6 +17,7 @@ class MarkdownToPdfConverter {
       ...options
     };
     this.highlighter = null;
+    this.markedConfigured = false;
   }
 
   async initHighlighter() {
@@ -24,7 +25,7 @@ class MarkdownToPdfConverter {
       console.log('Initializing Shiki highlighter...');
       this.highlighter = await createHighlighter({
         themes: ['github-light'],
-        langs: ['c', 'python', 'javascript', 'typescript', 'bash', 'json', 'yaml', 'markdown']
+        langs: ['c', 'python', 'javascript', 'typescript', 'bash', 'json', 'yaml', 'markdown', 'ruby', 'sql', 'html', 'css', 'java', 'go', 'rust', 'php', 'csharp', 'cpp']
       });
       console.log('Shiki highlighter ready');
     }
@@ -51,33 +52,41 @@ class MarkdownToPdfConverter {
   }
 
   async generateHtml(markdown, frontMatter = {}) {
-    // Configure marked to use Shiki for syntax highlighting
-    marked.use({
-      renderer: {
-        code: (token) => {
+    const highlighter = this.highlighter;
+    
+    // Configure marked only once to avoid stacking
+    if (!this.markedConfigured) {
+      const walkTokens = (token) => {
+        if (token.type === 'code') {
           const code = token.text;
           const language = token.lang || 'text';
           
           if (language === 'mermaid') {
-            return `<div class="mermaid">${code}</div>`;
+            token.type = 'html';
+            token.raw = `<div class="mermaid">${code}</div>`;
+            token.text = `<div class="mermaid">${code}</div>`;
+            return;
           }
           
           try {
-            // Use Shiki to highlight the code
-            const html = this.highlighter.codeToHtml(code, {
+            const html = highlighter.codeToHtml(code, {
               lang: language,
               theme: 'github-light'
             });
-            return html;
+            // Convert to html token
+            token.type = 'html';
+            token.raw = html;
+            token.text = html;
           } catch (e) {
             console.warn(`Failed to highlight ${language}, using plain code:`, e.message);
-            return `<pre><code class="language-${language}">${code}</code></pre>`;
+            // Leave as default code block
           }
         }
-      },
-      gfm: true,
-      breaks: false
-    });
+      };
+      
+      marked.use({ walkTokens, gfm: true, breaks: false });
+      this.markedConfigured = true;
+    }
     
     const htmlContent = marked.parse(markdown);
     
@@ -185,56 +194,31 @@ class MarkdownToPdfConverter {
       font-weight: 600;
     }
     
-    pre {
+    /* Code blocks with syntax highlighting */
+    pre.shiki {
       font-family: 'SF Mono', Monaco, Consolas, monospace;
       font-size: 8pt;
-      background: #f8f9fa !important;
-      padding: 0.8em !important;
-      margin: 0.8em 0 !important;
+      padding: 0.8em;
+      margin: 0.8em 0;
       border-radius: 4px;
       overflow-x: auto;
       white-space: pre-wrap;
       page-break-inside: avoid;
       break-inside: avoid;
-      border: 1px solid #e2e8f0 !important;
+      border: 1px solid #e2e8f0;
+      /* Critical: preserve colors when printing to PDF */
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      color-adjust: exact;
     }
     
-    pre code {
-      font-family: 'SF Mono', Monaco, Consolas, monospace;
-      font-size: 8pt;
-      background: transparent !important;
-      padding: 0 !important;
-      border-radius: 0;
-    }
-    
-    code {
+    /* Inline code (not in pre blocks) */
+    :not(pre) > code {
       font-family: 'SF Mono', Monaco, Consolas, monospace;
       font-size: 8pt;
       background: #f1f3f4;
       padding: 2px 4px;
       border-radius: 3px;
-    }
-    
-    /* Shiki generates its own syntax highlighting */
-    .shiki {
-      font-family: 'SF Mono', Monaco, Consolas, monospace !important;
-      font-size: 9pt !important;
-      background: #f8f9fa !important;
-      padding: 0.8em !important;
-      margin: 0.8em 0 !important;
-      border-radius: 4px;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      page-break-inside: avoid;
-      break-inside: avoid;
-      border: 1px solid #e2e8f0 !important;
-    }
-    
-    .shiki code {
-      font-family: 'SF Mono', Monaco, Consolas, monospace !important;
-      font-size: 8pt !important;
-      background: transparent !important;
-      padding: 0 !important;
     }
     
     .mermaid {

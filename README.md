@@ -122,8 +122,10 @@ node md-to-pdf-puppeteer.js input.md output.pdf
 - Pie charts, git graphs, user journeys
 
 **Code syntax highlighting:**
-- 100+ languages (JavaScript, Python, Go, Rust, C/C++, Java, etc.)
-- GitHub Light theme
+- Common languages: JavaScript, Python, Ruby, Java, C/C++, C#, Go, Rust, PHP
+- Web: HTML, CSS, TypeScript, JSON, YAML
+- Database: SQL
+- GitHub Light theme with colored syntax
 - Monospace fonts with proper indentation
 
 **Standard Markdown:**
