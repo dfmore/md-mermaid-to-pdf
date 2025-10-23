@@ -8,19 +8,13 @@ https://github.com/user-attachments/assets/5f5ddd09-66f3-407b-be05-ade41b87668a
 
 ---
 
-## Why This Converter?
+## What It Does
 
-Unlike basic Markdown converters, this tool excels at technical documentation:
-
-- 🎯 **Built for Mermaid** - All diagram types: flowcharts, sequence, class, state, ER, Gantt, etc.
-- 💻 **Code-focused** - Syntax highlighting for 100+ languages via Shiki (GitHub theme)
-- 📐 **Diagram quality** - High-resolution SVG rendering, centered layout, proper backgrounds
-- 🎨 **Code aesthetics** - Monospace fonts, syntax colors, proper spacing
-- ⚡ **Fast rendering** - Headless Chrome engine handles complex diagrams efficiently
-- 🔧 **Cursor native** - One-click PDF generation from your editor
-- 📦 **Self-contained** - No LaTeX, Pandoc, or external tools needed
-
-**Perfect for:** API documentation, technical specs, architecture diagrams, code tutorials, engineering notes.
+- Converts Markdown to PDF
+- Renders all Mermaid diagram types (flowcharts, sequence, class, state, ER, Gantt, etc.)
+- Syntax highlighting for 100+ languages via Shiki
+- Integrates with Cursor IDE as a task
+- No LaTeX or Pandoc required - uses headless Chrome
 
 ---
 
