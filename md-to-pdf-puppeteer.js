@@ -221,6 +221,12 @@ class MarkdownToPdfConverter {
       border-radius: 3px;
     }
     
+    /* Inline code within headings should scale with heading size */
+    h1 code, h2 code, h3 code, h4 code, h5 code, h6 code {
+      font-size: 0.85em;
+      background: #f1f3f4;
+    }
+    
     .mermaid {
       text-align: center;
       margin: 1.5em 0;
