@@ -10,11 +10,11 @@ https://github.com/user-attachments/assets/5f5ddd09-66f3-407b-be05-ade41b87668a
 
 ## What It Does
 
-- Converts Markdown to PDF
-- Renders all Mermaid diagram types (flowcharts, sequence, class, state, ER, Gantt, etc.)
-- Syntax highlighting for 100+ languages via Shiki
-- Integrates with Cursor IDE as a task
-- No LaTeX or Pandoc required - uses headless Chrome
+- 📄 Converts Markdown to PDF
+- 📊 Renders all Mermaid diagram types (flowcharts, sequence, class, state, ER, Gantt, etc.)
+- 💻 Syntax highlighting for 100+ languages via Shiki
+- 🔧 Integrates with Cursor IDE as a task
+- ⚡ Uses headless Chrome - no LaTeX or Pandoc required
 
 ---
 
