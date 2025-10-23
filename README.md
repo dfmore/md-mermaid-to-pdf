@@ -85,153 +85,44 @@ md-convert.bat test.md
 
 ## Cursor Integration
 
-This converter is designed to work seamlessly with Cursor IDE, allowing you to convert any Markdown file to PDF with a single keyboard shortcut.
+Convert any Markdown file to PDF directly from Cursor with one command.
 
-### Setup Cursor Task
+### Setup
 
-#### Option 1: Workspace Task (Per Project)
-
-Create or edit `.vscode/tasks.json` in your workspace:
+Add this to your Cursor settings file (`C:\Users\{username}\AppData\Roaming\Cursor\User\settings.json`):
 
 ```json
-{
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Convert MD to PDF",
-      "type": "shell",
-      "command": "node",
-      "args": [
-        "C:/Users/moreird/GitHub/md-mermaid-to-pdf/md-to-pdf-puppeteer.js",
-        "${file}"
-      ],
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      },
-      "problemMatcher": []
-    }
-  ]
-}
-```
-
-**Adjust the path** to match your installation location.
-
-#### Option 2: Global Task (All Projects)
-
-For Cursor global tasks, locate your Cursor user settings directory:
-
-**Windows:**
-```
-%APPDATA%\Cursor\User\tasks.json
-```
-
-**macOS:**
-```
-~/Library/Application Support/Cursor/User/tasks.json
-```
-
-**Linux:**
-```
-~/.config/Cursor/User/tasks.json
-```
-
-Add the same task configuration as above.
-
-### Using the Cursor Task
-
-Once configured, you can convert any Markdown file with these steps:
-
-1. **Open a `.md` file** in Cursor
-2. **Press `Ctrl+Shift+P`** (Windows/Linux) or `Cmd+Shift+P` (macOS)
-3. **Type "Tasks: Run Task"**
-4. **Select "Convert MD to PDF"**
-5. **PDF appears** in the same directory as your Markdown file
-
-### Cursor Task Features
-
-**What you get:**
-- ✅ **One-click conversion** - No need to leave the editor
-- ✅ **Current file context** - Uses `${file}` variable to convert the open document
-- ✅ **Live output** - See conversion progress in the terminal panel
-- ✅ **Error reporting** - Any issues are shown in the Cursor terminal
-- ✅ **Background operation** - Continue working while PDF generates
-
-**Example workflow:**
-```
-1. Write documentation.md in Cursor
-2. Ctrl+Shift+P → "Convert MD to PDF"
-3. PDF appears as documentation.pdf
-4. Continue editing
-5. Re-run task to update PDF
-```
-
-### Advanced Cursor Configuration
-
-#### Add Keyboard Shortcut
-
-Create or edit `.vscode/keybindings.json`:
-
-```json
-[
+"tasks.version": "2.0.0",
+"tasks.tasks": [
   {
-    "key": "ctrl+shift+p",
-    "command": "workbench.action.tasks.runTask",
-    "args": "Convert MD to PDF",
-    "when": "editorLangId == markdown"
+    "label": "Convert MD to PDF",
+    "type": "shell",
+    "command": "node C:/Users/moreird/GitHub/md-mermaid-to-pdf/md-to-pdf-puppeteer.js \"${file}\"",
+    "group": "build",
+    "presentation": {
+      "echo": true,
+      "reveal": "always",
+      "focus": false,
+      "panel": "shared",
+      "showReuseMessage": true,
+      "clear": false
+    },
+    "problemMatcher": []
   }
 ]
 ```
 
-This runs the conversion automatically when you press `Ctrl+Shift+P` in Markdown files.
+**Update the path** to match your installation directory.
 
-#### Multiple Output Formats
+### Usage
 
-You can create multiple tasks for different use cases:
+1. Open any `.md` file in Cursor
+2. Press `Ctrl+Shift+P`
+3. Type "Tasks: Run Task"
+4. Select "Convert MD to PDF"
+5. PDF appears in same directory as the Markdown file
 
-```json
-{
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Convert MD to PDF (Same Dir)",
-      "type": "shell",
-      "command": "node",
-      "args": [
-        "C:/path/to/md-to-pdf-puppeteer.js",
-        "${file}"
-      ]
-    },
-    {
-      "label": "Convert MD to PDF (Output Folder)",
-      "type": "shell",
-      "command": "node",
-      "args": [
-        "C:/path/to/md-to-pdf-puppeteer.js",
-        "${file}",
-        "${workspaceFolder}/pdfs/${fileBasenameNoExtension}.pdf"
-      ]
-    }
-  ]
-}
-```
-
-#### Auto-Convert on Save
-
-For automatic PDF generation when saving Markdown files, use the [Run on Save](https://marketplace.visualstudio.com/items?itemName=emeraldwalk.RunOnSave) extension with this configuration:
-
-```json
-{
-  "emeraldwalk.runonsave": {
-    "commands": [
-      {
-        "match": "\\.md$",
-        "cmd": "node C:/path/to/md-to-pdf-puppeteer.js ${file}"
-      }
-    ]
-  }
-}
-```
+The `${file}` variable automatically uses the currently open file path.
 
 ---
 
