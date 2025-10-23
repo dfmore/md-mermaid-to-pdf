@@ -1,0 +1,25 @@
+{
+  "name": "md-mermaid-to-pdf",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Markdown to PDF converter with Mermaid diagram support using Puppeteer",
+  "main": "md-to-pdf-puppeteer.js",
+  "scripts": {
+    "convert": "node md-to-pdf-puppeteer.js"
+  },
+  "keywords": [
+    "markdown",
+    "pdf",
+    "mermaid",
+    "converter",
+    "puppeteer"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "marked": "^16.4.1",
+    "puppeteer": "^24.25.0",
+    "shiki": "^3.13.0"
+  }
+}
