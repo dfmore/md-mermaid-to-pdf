@@ -56,9 +56,33 @@ Open `C:\Users\{YourName}\AppData\Roaming\Cursor\User\settings.json` and add thi
 "tasks.version": "2.0.0",
 "tasks.tasks": [
   {
-    "label": "Convert MD to PDF",
+    "label": "Convert MD to PDF (Portrait)",
     "type": "shell",
-    "command": "node C:/path/to/md-mermaid-to-pdf/md-to-pdf-puppeteer.js \"${file}\"",
+    "command": "node C:/path/to/md-mermaid-to-pdf/md-to-pdf-portrait-puppeteer.js \"${file}\"",
+    "group": "build",
+    "presentation": {
+      "echo": true,
+      "reveal": "always",
+      "focus": false,
+      "panel": "shared"
+    }
+  },
+  {
+    "label": "Convert MD to PDF (Landscape)",
+    "type": "shell",
+    "command": "node C:/path/to/md-mermaid-to-pdf/md-to-pdf-landscape-puppeteer.js \"${file}\"",
+    "group": "build",
+    "presentation": {
+      "echo": true,
+      "reveal": "always",
+      "focus": false,
+      "panel": "shared"
+    }
+  },
+  {
+    "label": "Convert MD to Slides PDF",
+    "type": "shell",
+    "command": "node C:/path/to/md-mermaid-to-pdf/md-to-ppt-puppeteer.js \"${file}\"",
     "group": "build",
     "presentation": {
       "echo": true,
@@ -74,7 +98,7 @@ Open `C:\Users\{YourName}\AppData\Roaming\Cursor\User\settings.json` and add thi
 
 **Example:**
 ```json
-"command": "node C:/Users/John/GitHub/md-mermaid-to-pdf/md-to-pdf-puppeteer.js \"${file}\"",
+"command": "node C:/Users/John/GitHub/md-mermaid-to-pdf/md-to-pdf-portrait-puppeteer.js \"${file}\"",
 ```
 
 ### Step 4: Use It
@@ -82,7 +106,10 @@ Open `C:\Users\{YourName}\AppData\Roaming\Cursor\User\settings.json` and add thi
 1. Open any `.md` file in Cursor
 2. Press `Ctrl+Shift+P`
 3. Type "Tasks: Run Task"
-4. Select "Convert MD to PDF"
+4. Select one of:
+   - **"Convert MD to PDF (Portrait)"** - Standard A4 portrait PDF
+   - **"Convert MD to PDF (Landscape)"** - A4 landscape PDF
+   - **"Convert MD to Slides PDF"** - Slides format (separate slides with `---`)
 5. PDF appears in the same folder as your `.md` file
 
 Done! You now have one-click PDF conversion in Cursor.
@@ -104,12 +131,18 @@ Done! You now have one-click PDF conversion in Cursor.
 If you prefer command line:
 
 ```powershell
-# Windows batch file
+# Windows batch file (portrait)
 .\md-convert.bat your-file.md
 
-# Or Node script directly
-node md-to-pdf-puppeteer.js your-file.md
-node md-to-pdf-puppeteer.js input.md output.pdf
+# Or Node scripts directly
+node md-to-pdf-portrait-puppeteer.js your-file.md
+node md-to-pdf-portrait-puppeteer.js input.md output.pdf
+
+# Landscape version
+node md-to-pdf-landscape-puppeteer.js your-file.md
+
+# Slides version (separate slides with ---)
+node md-to-ppt-puppeteer.js your-file.md
 ```
 
 ---
@@ -134,10 +167,10 @@ node md-to-pdf-puppeteer.js input.md output.pdf
 - Links, images
 - YAML frontmatter
 
-**Output format:**
-- A4 portrait pages
-- Inter font (11pt body, 20pt headings)
-- 0.5" margins
+**Output formats:**
+- **Portrait PDF**: A4 portrait pages, Inter font (11pt body, 20pt headings), 0.5" margins
+- **Landscape PDF**: A4 landscape pages, same styling as portrait
+- **Slides PDF**: A4 landscape slides (separate slides with `---`), larger fonts for presentation readability
 
 ---
 
