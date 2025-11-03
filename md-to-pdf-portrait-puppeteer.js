@@ -1,11 +1,8 @@
 #!/usr/bin/env node
 
 import { marked } from 'marked';
-import puppeteer from 'puppeteer';
-import matter from 'gray-matter';
-import { readFile, writeFile } from 'fs/promises';
-import { resolve, dirname, basename, extname } from 'path';
-import { createHighlighter } from 'shiki';
+import { resolve } from 'path';
+import { getMermaidInitScript, createWalkTokens, parseArgs, initHighlighter, htmlToPdf as sharedHtmlToPdf, CSS_FONT_SIZES } from './pdf-utils.js';
 
 class MarkdownToPdfConverter {
   constructor(options = {}) {
@@ -22,16 +19,14 @@ class MarkdownToPdfConverter {
 
   async initHighlighter() {
     if (!this.highlighter) {
-      console.log('Initializing Shiki highlighter...');
-      this.highlighter = await createHighlighter({
-        themes: ['github-light'],
-        langs: ['c', 'python', 'javascript', 'typescript', 'bash', 'json', 'yaml', 'markdown', 'ruby', 'sql', 'html', 'css', 'java', 'go', 'rust', 'php', 'csharp', 'cpp']
-      });
-      console.log('Shiki highlighter ready');
+      this.highlighter = await initHighlighter();
     }
   }
 
   async convert(markdownPath, outputPath) {
+    const { readFile, writeFile } = await import('fs/promises');
+    const matter = (await import('gray-matter')).default;
+    
     console.log(`Reading markdown file: ${markdownPath}`);
     const markdownContent = await readFile(resolve(markdownPath), 'utf8');
     console.log(`File size: ${markdownContent.length} characters`);
@@ -56,34 +51,7 @@ class MarkdownToPdfConverter {
     
     // Configure marked only once to avoid stacking
     if (!this.markedConfigured) {
-      const walkTokens = (token) => {
-        if (token.type === 'code') {
-          const code = token.text;
-          const language = token.lang || 'text';
-          
-          if (language === 'mermaid') {
-            token.type = 'html';
-            token.raw = `<div class="mermaid">${code}</div>`;
-            token.text = `<div class="mermaid">${code}</div>`;
-            return;
-          }
-          
-          try {
-            const html = highlighter.codeToHtml(code, {
-              lang: language,
-              theme: 'github-light'
-            });
-            // Convert to html token
-            token.type = 'html';
-            token.raw = html;
-            token.text = html;
-          } catch (e) {
-            console.warn(`Failed to highlight ${language}, using plain code:`, e.message);
-            // Leave as default code block
-          }
-        }
-      };
-      
+      const walkTokens = createWalkTokens(highlighter);
       marked.use({ walkTokens, gfm: true, breaks: false });
       this.markedConfigured = true;
     }
@@ -178,7 +146,7 @@ class MarkdownToPdfConverter {
       border-collapse: collapse;
       width: 100%;
       margin: 1em 0;
-      font-size: 10pt;
+      font-size: ${CSS_FONT_SIZES.table};
       page-break-inside: avoid;
     }
     
@@ -197,7 +165,7 @@ class MarkdownToPdfConverter {
     /* Code blocks with syntax highlighting */
     pre.shiki {
       font-family: 'SF Mono', Monaco, Consolas, monospace;
-      font-size: 8pt;
+      font-size: ${CSS_FONT_SIZES.codeBlock};
       padding: 0.8em;
       margin: 0.8em 0;
       border-radius: 4px;
@@ -215,7 +183,7 @@ class MarkdownToPdfConverter {
     /* Inline code (not in pre blocks) */
     :not(pre) > code {
       font-family: 'SF Mono', Monaco, Consolas, monospace;
-      font-size: 8pt;
+      font-size: ${CSS_FONT_SIZES.inlineCode};
       background: #f1f3f4;
       padding: 2px 4px;
       border-radius: 3px;
@@ -252,13 +220,14 @@ class MarkdownToPdfConverter {
     .mermaid svg text,
     .mermaid svg tspan,
     .mermaid svg foreignObject {
-      font-size: 8pt !important;
-      max-font-size: 8pt !important;
+      font-size: ${CSS_FONT_SIZES.mermaid} !important;
+      max-font-size: ${CSS_FONT_SIZES.mermaid} !important;
     }
    
     strong { font-weight: 600; }
     em { font-style: italic; }
     
+    /* Blockquote: Subtle gray for documents (slides use blue accent + italic for prominence) */
     blockquote {
       border-left: 4px solid #e2e8f0;
       padding-left: 1em;
@@ -300,177 +269,29 @@ class MarkdownToPdfConverter {
   <div class="container">
     ${htmlContent}
   </div>
-  <script>
-    // Initialize Mermaid with better settings for A4 portrait
-    mermaid.initialize({ 
-      startOnLoad: true, 
-      theme: 'default',
-      themeVariables: {
-        fontFamily: 'Inter, sans-serif'
-      },
-      flowchart: {
-        useMaxWidth: true,
-        htmlLabels: true
-      },
-      sequence: {
-        useMaxWidth: true
-      },
-      gantt: {
-        useMaxWidth: true
-      }
-    });
-    
-      // Ensure proper spacing
-      const mermaidElements = document.querySelectorAll('.mermaid');
-      mermaidElements.forEach((element, index) => {
-        console.log('Processing Mermaid diagram', index + 1);
-        // Add a small delay to ensure proper rendering
-        setTimeout(() => {
-          const svg = element.querySelector('svg');
-          if (svg) {
-            svg.style.maxWidth = '100%';
-            svg.style.height = 'auto';
-          }
-        }, 100);
-      });
-    });
+  <script>${getMermaidInitScript('better settings for A4 portrait')}
   </script>
 </body>
 </html>`;
   }
 
   async htmlToPdf(html) {
-    console.log('Launching Puppeteer...');
-    const browser = await puppeteer.launch({ 
-      headless: true,
-      args: [
-        '--no-sandbox', 
-        '--disable-setuid-sandbox', 
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-gpu',
-        '--disable-web-security',
-        '--disable-features=VizDisplayCompositor'
-      ]
+    return await sharedHtmlToPdf(html, {
+      viewportWidth: 794,
+      viewportHeight: 1123,
+      landscape: false,
+      margin: this.options.margin,
+      displayHeaderFooter: this.options.displayHeaderFooter,
+      printBackground: this.options.printBackground,
+      logMessage: 'Generating clean A4 portrait PDF...'
     });
-    
-    try {
-      console.log('Creating new page...');
-      const page = await browser.newPage();
-      
-      // Set viewport optimized for A4 portrait
-      await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
-      
-      console.log('Setting content...');
-      await page.setContent(html, { 
-        waitUntil: ['networkidle0', 'domcontentloaded'],
-        timeout: 30000
-      });
-      
-      console.log('Waiting for fonts to load...');
-      await Promise.race([
-        page.evaluateHandle('document.fonts.ready'),
-        new Promise(resolve => setTimeout(resolve, 10000))
-      ]);
-      
-      console.log('Waiting for Mermaid diagrams to render...');
-      try {
-        await page.waitForFunction(() => {
-          const mermaidElements = document.querySelectorAll('.mermaid');
-          if (mermaidElements.length === 0) return true;
-          
-          return Array.from(mermaidElements).every(el => {
-            const svg = el.querySelector('svg');
-            return svg && svg.children.length > 0;
-          });
-        }, { 
-          timeout: 30000,
-          polling: 1000
-        });
-        console.log('All Mermaid diagrams rendered successfully');
-      } catch (e) {
-        console.log('Mermaid rendering timeout, proceeding anyway:', e.message);
-      }
-      
-      // Clean up any potential formatting issues
-      await page.evaluate(() => {
-        // Remove any empty elements that might cause blank pages
-        const emptyElements = document.querySelectorAll('p:empty, div:empty, h1:empty, h2:empty, h3:empty, h4:empty, h5:empty, h6:empty');
-        emptyElements.forEach(el => {
-          if (el.textContent.trim() === '') {
-            el.remove();
-          }
-        });
-        
-        // Ensure proper spacing between elements
-        const elements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, ul, ol, pre, .mermaid');
-        elements.forEach(el => {
-          const style = window.getComputedStyle(el);
-          if (style.marginTop === '0px' && style.marginBottom === '0px') {
-            el.style.marginTop = '1em';
-            el.style.marginBottom = '1em';
-          }
-        });
-      });
-      
-      // Additional wait to ensure everything is stable
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      console.log('Generating clean A4 portrait PDF...');
-      const pdf = await page.pdf({
-        format: 'A4',
-        landscape: false,
-        margin: this.options.margin,
-        displayHeaderFooter: this.options.displayHeaderFooter,
-        printBackground: this.options.printBackground,
-        tagged: true,
-        outline: true,
-        preferCSSPageSize: true,
-        omitBackground: false
-      });
-      
-      console.log('PDF generation complete');
-      return pdf;
-    } finally {
-      await browser.close();
-    }
   }
-}
-
-// Parse command line arguments
-function parseArgs() {
-  const args = process.argv.slice(2);
-  
-  if (args.length === 0) {
-    console.log('Usage: node md-to-pdf-puppeteer.js <input.md> [output.pdf]');
-    console.log('If output.pdf is not specified, it will be generated in the same directory as input.md');
-    process.exit(1);
-  }
-  
-  // Normalize the input path - handle both forward and backward slashes
-  let inputPath = args[0];
-  
-  // Convert backslashes to forward slashes for consistent handling
-  inputPath = inputPath.replace(/\\/g, '/');
-  
-  let outputPath = args[1];
-  
-  // If no output path specified, generate one based on input
-  if (!outputPath) {
-    const inputDir = dirname(inputPath);
-    const inputBase = basename(inputPath, extname(inputPath));
-    outputPath = resolve(inputDir, `${inputBase}.pdf`);
-  }
-  
-  return { inputPath, outputPath };
 }
 
 // Main execution
 async function main() {
   try {
-    const { inputPath, outputPath } = parseArgs();
+    const { inputPath, outputPath } = parseArgs('md-to-pdf-portrait-puppeteer.js');
     
     console.log(`Converting: ${inputPath} -> ${outputPath}`);
     

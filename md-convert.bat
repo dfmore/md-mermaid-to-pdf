@@ -16,4 +16,4 @@ REM Get the directory where this batch file is located
 set SCRIPT_DIR=%~dp0
 
 REM Run the converter
-node "%SCRIPT_DIR%md-to-pdf-puppeteer.js" %*
+node "%SCRIPT_DIR%md-to-pdf-portrait-puppeteer.js" %*
