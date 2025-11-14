@@ -225,12 +225,12 @@ class MarkdownToPptConverter {
       page-break-inside: avoid;
       break-inside: avoid;
       page-break-before: avoid;
-      max-height: 600px;
+      max-height: 540px;
     }
     
     .mermaid svg {
       max-width: 100%;
-      max-height: 550px;
+      max-height: 495px;
       height: auto;
       display: block;
       margin: 0 auto;
